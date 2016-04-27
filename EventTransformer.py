@@ -183,5 +183,6 @@ def jsonify_good_event(event, known_fields=ACTUAL_FIELDS): # array of strings
             if event[i] == '':
                 output[key] = None
             else:
-                output[key] = known_fields[i][1](event[i])
+                json_key, json_value = known_fields[i][1](key, event[i])
+                output[json_key] = json_value
         return output
