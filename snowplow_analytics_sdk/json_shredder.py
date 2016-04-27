@@ -16,7 +16,7 @@
 
 import re
 import json
-from SnowplowEventTransformationException import SnowplowEventTransformationException
+from snowplow_event_transformation_exception import SnowplowEventTransformationException
 
 SCHEMA_PATTERN = re.compile(""".+:([a-zA-Z0-9_\.]+)/([a-zA-Z0-9_]+)/[^/]+/(.*)""")
 

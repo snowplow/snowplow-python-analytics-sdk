@@ -15,8 +15,8 @@
 """
 
 import json
-import JsonShredder
-from SnowplowEventTransformationException import *
+import json_shredder
+from snowplow_event_transformation_exception import SnowplowEventTransformationException
 
 LATITUDE_INDEX = 22
 LONGITUDE_INDEX = 23
@@ -37,9 +37,9 @@ def DoubleField(key, value):
 def TstampField(key, value):
     return [(key, value.replace(' ', 'T') + 'Z')]
 def ContextsField(key, value):
-    return JsonShredder.parse_contexts(value)
+    return json_shredder.parse_contexts(value)
 def UnstructField(key, value):
-    return JsonShredder.parse_unstruct(value)
+    return json_shredder.parse_unstruct(value)
 
 ACTUAL_FIELDS = (
     ("app_id", StringField),
