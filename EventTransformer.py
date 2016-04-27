@@ -22,20 +22,20 @@ LATITUDE_INDEX = 22
 LONGITUDE_INDEX = 23
 
 def StringField(key, value):
-    return (key, value)
+    return [(key, value)]
 def IntField(key, value):
-    return (key, int(value))
+    return [(key, int(value))]
 def BoolField(key, value):
     if value == '1':
-        return (key, True)
+        return [(key, True)]
     elif value == '0':
-        return (key, False)
+        return [(key, False)]
     raise Exception("Invalid value {} for field {}".format(value, key))
 
 def DoubleField(key, value):
-    return (key, float(value))
+    return [(key, float(value))]
 def TstampField(key, value):
-    return (key, value.replace(' ', 'T') + 'Z')
+    return [(key, value.replace(' ', 'T') + 'Z')]
 def ContextsField(key, value):
     return JsonShredder.parse_contexts(value)
 def UnstructField(key, value):
@@ -192,8 +192,9 @@ def jsonify_good_event(event, known_fields=ACTUAL_FIELDS, add_geolocation_data =
                 output[key] = None
             else:
                 try:
-                    json_key, json_value = known_fields[i][1](key, event[i])
-                    output[json_key] = json_value
+                    kvpairs = known_fields[i][1](key, event[i])
+                    for kvpair in kvpairs:
+                        output[kvpair[0]] = kvpair[1]
                 except SnowplowEventTransformationException as sete:
                     errors += sete.error_messages
                 except Exception as e:
