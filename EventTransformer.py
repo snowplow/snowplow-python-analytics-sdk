@@ -30,7 +30,7 @@ def BoolField(key, value):
         return [(key, True)]
     elif value == '0':
         return [(key, False)]
-    raise Exception("Invalid value {} for field {}".format(value, key))
+    raise SnowplowEventTransformationException(["Invalid value {} for field {}".format(value, key)])
 
 def DoubleField(key, value):
     return [(key, float(value))]
