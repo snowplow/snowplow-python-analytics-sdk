@@ -17,24 +17,24 @@
 import json
 
 def StringField(key, value):
-	return (key, value)
+    return (key, value)
 def IntField(key, value):
-	return (key, int(value))
+    return (key, int(value))
 def BoolField(key, value):
-	if value == '1':
-		return (key, True)
-	elif value == '0':
-		return (key, False)
-	raise Exception("Invalid value {} for field {}".format(value, key))
+    if value == '1':
+        return (key, True)
+    elif value == '0':
+        return (key, False)
+    raise Exception("Invalid value {} for field {}".format(value, key))
 
 def DoubleField(key, value):
-	return (key, float(value))
+    return (key, float(value))
 def TstampField(key, value):
-	return (key, value.replace(' ', 'T') + 'Z')
+    return (key, value.replace(' ', 'T') + 'Z')
 def ContextsField(key, value):
-	return (key, "TODO")
+    return (key, "TODO")
 def UnstructField(key, value):
-	return (key, "TODO")
+    return (key, "TODO")
 
 ACTUAL_FIELDS = (
     ("app_id", StringField),
@@ -171,17 +171,17 @@ ACTUAL_FIELDS = (
 )
 
 def transform(line, known_fields=ACTUAL_FIELDS):
-	return jsonify_good_event(line.split('\t'), known_fields)
+    return jsonify_good_event(line.split('\t'), known_fields)
 
 def jsonify_good_event(event, known_fields=ACTUAL_FIELDS): # array of strings
-	if len(event) != len(known_fields):
-		raise Exception("Expected {} fields, received {} fields.".format(len(known_fields), len(event)))
-	else:
-		output = {}
-		for i in range(len(event)):
-			key = known_fields[i][0]
-			if event[i] == '':
-				output[key] = None
-			else:
-				output[key] = known_fields[i][1](event[i])
-		return output
+    if len(event) != len(known_fields):
+        raise Exception("Expected {} fields, received {} fields.".format(len(known_fields), len(event)))
+    else:
+        output = {}
+        for i in range(len(event)):
+            key = known_fields[i][0]
+            if event[i] == '':
+                output[key] = None
+            else:
+                output[key] = known_fields[i][1](event[i])
+        return output
