@@ -199,7 +199,7 @@ def jsonify_good_event(event, known_fields=ACTUAL_FIELDS, add_geolocation_data =
                     errors += sete.error_messages
                 except Exception as e:
                     errors += ["Unexpected exception parsing field with key {} and value {}: {}".format(
-                        known_fields[i][1],
+                        known_fields[i][0],
                         event[i],
                         repr(e)
                     )]
