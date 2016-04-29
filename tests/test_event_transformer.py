@@ -343,6 +343,10 @@ def test_transform():
     actual = transform(tsv)
     assert(actual==expected)
 
+def test_unicode_tsv():
+    actual = transform(unicode(tsv))
+    assert(actual==expected)
+
 def test_wrong_tsv_length():
     exception = None
     try:
