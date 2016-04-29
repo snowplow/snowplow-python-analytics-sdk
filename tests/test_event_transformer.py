@@ -17,7 +17,7 @@
 from snowplow_analytics_sdk.event_transformer import transform
 import json
 
-unstructJson = """{
+unstruct_json = """{
     "schema": "iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0",
     "data": {
       "schema": "iglu:com.snowplowanalytics.snowplow/link_click/jsonschema/1-0-1",
@@ -29,7 +29,7 @@ unstructJson = """{
     }
   }"""
 
-contextsJson = """{
+contexts_json = """{
     "schema": "iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0",
     "data": [
       {
@@ -79,7 +79,7 @@ contextsJson = """{
     ]
   }"""
 
-derivedContextsJson = """{
+derived_contexts_json = """{
     "schema": "iglu:com.snowplowanalytics.snowplow\/contexts\/jsonschema\/1-0-1",
     "data": [
       {
@@ -155,13 +155,13 @@ full_event = (
         ("mkt_term" , ""),
         ("mkt_content" , ""),
         ("mkt_campaign" , ""),
-        ("contexts" , contextsJson),
+        ("contexts" , contexts_json),
         ("se_category" , ""),
         ("se_action" , ""),
         ("se_label" , ""),
         ("se_property" , ""),
         ("se_value" , ""),
-        ("unstruct_event" , unstructJson),
+        ("unstruct_event" , unstruct_json),
         ("tr_orderid" , ""),
         ("tr_affiliation" , ""),
         ("tr_total" , ""),
@@ -225,7 +225,7 @@ full_event = (
         ("dvce_sent_tstamp" , ""),
         ("refr_domain_userid" , ""),
         ("refr_device_tstamp" , ""),
-        ("derived_contexts", derivedContextsJson),
+        ("derived_contexts", derived_contexts_json),
         ("domain_sessionid" , "2b15e5c8-d3b1-11e4-b9d6-1681e6b88ec1"),
         ("derived_tstamp" , "2013-11-26 00:03:57.886"),
         ("event_vendor" , "com.snowplowanalytics.snowplow"),
