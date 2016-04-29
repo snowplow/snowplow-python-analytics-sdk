@@ -351,7 +351,7 @@ def test_wrong_tsv_length():
     exception = sete
   assert(exception.message == "Expected 131 fields, received 2 fields.")
 
-def test_malformed_fields():
+def test_malformed_field():
   exception = None
   malformed_fields_tsv = '\t' * 110 + 'bad_tax_base' + '\t' * 20
 
@@ -362,3 +362,15 @@ def test_malformed_fields():
   assert(exception.message ==
     "Unexpected exception parsing field with key tr_tax_base and value bad_tax_base: ValueError('could not convert string to float: bad_tax_base',)")
 
+def test_multiple_malformed_fields():
+  exception = None
+  malformed_fields_tsv = '\t' * 52 + 'bad_contexts' + '\t' * 50 + 'bad_dvce_ismobile' + '\t' * 28
+
+  try:
+    transform(malformed_fields_tsv)
+  except SnowplowEventTransformationException as sete:
+    exception = sete
+  assert(exception.error_messages == [
+    "Unexpected exception parsing field with key contexts and value bad_contexts: ValueError('No JSON object could be decoded',)",
+    "Invalid value bad_dvce_ismobile for field dvce_ismobile"
+  ])
