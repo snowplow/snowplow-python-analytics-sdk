@@ -37,7 +37,7 @@ def fix_schema(prefix, schema):
 
 def parse_contexts(contexts):
     """
-    Convert a contexts JSON to an Elasticsearch-compatible JObject
+    Convert a contexts JSON to an Elasticsearch-compatible list of key-value pairs
     For example, the JSON
 
     {
@@ -66,10 +66,10 @@ def parse_contexts(contexts):
 
     would become
 
-    {
-      "context_com_acme_duplicated_1": [{"value": 1}, {"value": 2}],
-      "context_com_acme_unduplicated_1": [{"unique": true}]
-    }
+    [
+      ("context_com_acme_duplicated_1", [{"value": 1}, {"value": 2}]),
+      ("context_com_acme_unduplicated_1", [{"unique": true}])
+    ]
     """
     my_json = json.loads(contexts)
     data = my_json['data']
@@ -89,7 +89,7 @@ def parse_contexts(contexts):
 
 def parse_unstruct(unstruct):
     """
-    Convert an unstructured event JSON to an Elasticsearch-compatible JObject
+    Convert an unstructured event JSON to a list containing one Elasticsearch-compatible key-value pair
     For example, the JSON
 
     {
@@ -104,11 +104,13 @@ def parse_unstruct(unstruct):
 
     would become
 
-    {
-      "unstruct_com_snowplowanalytics_snowplow_link_click_1": {
-        "key": "value"
-      }
-    }
+    [
+      (
+        "unstruct_com_snowplowanalytics_snowplow_link_click_1", {
+          "key": "value"
+        }
+      )
+    ]
     """
     my_json = json.loads(unstruct)
     data = my_json['data']
