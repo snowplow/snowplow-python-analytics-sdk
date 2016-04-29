@@ -23,8 +23,10 @@ LONGITUDE_INDEX = 23
 
 def convert_string(key, value):
     return [(key, value)]
+
 def convert_int(key, value):
     return [(key, int(value))]
+
 def convert_bool(key, value):
     if value == '1':
         return [(key, True)]
@@ -34,13 +36,17 @@ def convert_bool(key, value):
 
 def convert_double(key, value):
     return [(key, float(value))]
+
 def convert_tstamp(key, value):
     return [(key, value.replace(' ', 'T') + 'Z')]
+
 def convert_contexts(key, value):
     return json_shredder.parse_contexts(value)
+
 def convert_unstruct(key, value):
     return json_shredder.parse_unstruct(value)
 
+# Ordered list of names of enriched event fields together with the function required to convert them to JSON
 ENRICHED_EVENT_FIELD_TYPES = (
     ("app_id", convert_string),
     ("platform", convert_string),
@@ -176,9 +182,15 @@ ENRICHED_EVENT_FIELD_TYPES = (
 )
 
 def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True):
+    """
+    Convert a Snowplow enriched event TSV into a JSON
+    """
     return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data)
 
 def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True):
+    """
+    Convert a Snowplow enriched event in the form of an array of fields into a JSON
+    """
     if len(event) != len(known_fields):
         raise SnowplowEventTransformationException(["Expected {} fields, received {} fields.".format(len(known_fields), len(event))])
     else:
