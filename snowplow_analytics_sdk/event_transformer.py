@@ -188,9 +188,7 @@ def jsonify_good_event(event, known_fields=ACTUAL_FIELDS, add_geolocation_data =
             output['geo_location'] = event[LATITUDE_INDEX] + ',' + event[LONGITUDE_INDEX]
         for i in range(len(event)):
             key = known_fields[i][0]
-            if event[i] == '':
-                output[key] = None
-            else:
+            if event[i] != '':
                 try:
                     kvpairs = known_fields[i][1](key, event[i])
                     for kvpair in kvpairs:
