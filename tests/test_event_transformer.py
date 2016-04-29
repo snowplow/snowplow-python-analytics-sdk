@@ -15,6 +15,7 @@
 """
 
 from snowplow_analytics_sdk.event_transformer import transform
+from snowplow_analytics_sdk.snowplow_event_transformation_exception import SnowplowEventTransformationException
 import json
 
 unstruct_json = """{
@@ -341,3 +342,23 @@ expected = json.loads("""{
 def test_transform():
 	actual = transform(tsv)
 	assert(actual==expected)
+
+def test_wrong_tsv_length():
+  exception = None
+  try:
+    transform("two\tfields")
+  except SnowplowEventTransformationException as sete:
+    exception = sete
+  assert(exception.message == "Expected 131 fields, received 2 fields.")
+
+def test_malformed_fields():
+  exception = None
+  malformed_fields_tsv = '\t' * 110 + 'bad_tax_base' + '\t' * 20
+
+  try:
+    transform(malformed_fields_tsv)
+  except SnowplowEventTransformationException as sete:
+    exception = sete
+  assert(exception.message ==
+    "Unexpected exception parsing field with key tr_tax_base and value bad_tax_base: ValueError('could not convert string to float: bad_tax_base',)")
+
