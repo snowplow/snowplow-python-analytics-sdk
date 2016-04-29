@@ -175,10 +175,10 @@ ACTUAL_FIELDS = (
     ("true_tstamp", TstampField)
 )
 
-def transform(line, known_fields=ACTUAL_FIELDS):
-    return jsonify_good_event(line.split('\t'), known_fields)
+def transform(line, known_fields=ACTUAL_FIELDS, add_geolocation_data=True):
+    return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data)
 
-def jsonify_good_event(event, known_fields=ACTUAL_FIELDS, add_geolocation_data = True): # array of strings
+def jsonify_good_event(event, known_fields=ACTUAL_FIELDS, add_geolocation_data=True): # array of strings
     if len(event) != len(known_fields):
         raise SnowplowEventTransformationException(["Expected {} fields, received {} fields.".format(len(known_fields), len(event))])
     else:
