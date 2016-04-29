@@ -32,7 +32,7 @@ def fix_schema(prefix, schema):
             "Schema {} does not conform to regular expression {}".format(schema, SCHEMA_PATTERN)
         ])
 
-def parse_contexts(contexts): # string
+def parse_contexts(contexts):
     my_json = json.loads(contexts)
     data = my_json['data']
     distinct_contexts = {}
@@ -48,7 +48,7 @@ def parse_contexts(contexts): # string
         output.append((key, distinct_contexts[key]))
     return output
 
-def parse_unstruct(unstruct): # string
+def parse_unstruct(unstruct):
     my_json = json.loads(unstruct)
     data = my_json['data']
     schema = data['schema']
