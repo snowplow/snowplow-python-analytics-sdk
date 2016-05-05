@@ -67,7 +67,7 @@ import snowplow_analytics_sdk.snowplow_event_transformation_exception
 
 try:
     print(snowplow_analytics_sdk.event_transformer(my_enriched_event_tsv))
-catch snowplow_analytics_sdk.snowplow_event_transformation_exception.SnowplowEventTransformationException as e:
+except snowplow_analytics_sdk.snowplow_event_transformation_exception.SnowplowEventTransformationException as e:
     for error_message in e.error_messages:
         print(error_message)
 
