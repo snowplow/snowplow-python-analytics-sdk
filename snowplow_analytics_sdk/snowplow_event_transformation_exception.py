@@ -14,6 +14,7 @@
     License: Apache License Version 2.0
 """
 
+
 class SnowplowEventTransformationException(Exception):
     def __init__(self, error_messages):
         self.error_messages = error_messages

@@ -17,11 +17,11 @@
 from distutils.core import setup
 
 setup(
-	name='snowplow_analytics_sdk',
+    name='snowplow_analytics_sdk',
     version='0.1.0',
     description='Snowplow Analytics Python SDK',
     author='Fred Blundun',
     url='https://www.python.org/sigs/snowplowsdk-sigs/',
     author_email='fred@snowplowanalytics.com',
     packages=['snowplow_analytics_sdk'],
-    )
+)
