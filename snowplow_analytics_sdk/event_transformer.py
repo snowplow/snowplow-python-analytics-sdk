@@ -14,18 +14,20 @@
     License: Apache License Version 2.0
 """
 
-import json
 import json_shredder
 from snowplow_event_transformation_exception import SnowplowEventTransformationException
 
 LATITUDE_INDEX = 22
 LONGITUDE_INDEX = 23
 
+
 def convert_string(key, value):
     return [(key, value)]
 
+
 def convert_int(key, value):
     return [(key, int(value))]
+
 
 def convert_bool(key, value):
     if value == '1':
@@ -34,14 +36,18 @@ def convert_bool(key, value):
         return [(key, False)]
     raise SnowplowEventTransformationException(["Invalid value {} for field {}".format(value, key)])
 
+
 def convert_double(key, value):
     return [(key, float(value))]
+
 
 def convert_tstamp(key, value):
     return [(key, value.replace(' ', 'T') + 'Z')]
 
+
 def convert_contexts(key, value):
     return json_shredder.parse_contexts(value)
+
 
 def convert_unstruct(key, value):
     return json_shredder.parse_unstruct(value)
@@ -181,18 +187,22 @@ ENRICHED_EVENT_FIELD_TYPES = (
     ("true_tstamp", convert_tstamp)
 )
 
+
 def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True):
     """
     Convert a Snowplow enriched event TSV into a JSON
     """
     return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data)
 
+
 def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True):
     """
     Convert a Snowplow enriched event in the form of an array of fields into a JSON
     """
     if len(event) != len(known_fields):
-        raise SnowplowEventTransformationException(["Expected {} fields, received {} fields.".format(len(known_fields), len(event))])
+        raise SnowplowEventTransformationException(
+            ["Expected {} fields, received {} fields.".format(len(known_fields), len(event))]
+        )
     else:
         output = {}
         errors = []

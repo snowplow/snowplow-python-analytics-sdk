@@ -20,6 +20,7 @@ from snowplow_event_transformation_exception import SnowplowEventTransformationE
 
 SCHEMA_PATTERN = re.compile(""".+:([a-zA-Z0-9_\.]+)/([a-zA-Z0-9_]+)/[^/]+/(.*)""")
 
+
 def fix_schema(prefix, schema):
     """
     Create an Elasticsearch field name from a schema string
@@ -34,6 +35,7 @@ def fix_schema(prefix, schema):
         raise SnowplowEventTransformationException([
             "Schema {} does not conform to regular expression {}".format(schema, SCHEMA_PATTERN)
         ])
+
 
 def parse_contexts(contexts):
     """
