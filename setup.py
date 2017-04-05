@@ -21,7 +21,7 @@ setup(
     version='0.1.0-a1',
     description='Snowplow Analytics Python SDK',
     author='Fred Blundun',
-    url='https://www.python.org/sigs/snowplowsdk-sigs/',
+    url='https://github.com/snowplow/snowplow-python-analytics-sdk',
     author_email='support@snowplowanalytics.com',
     packages=['snowplow_analytics_sdk'],
 )
