@@ -18,7 +18,7 @@ from distutils.core import setup
 
 setup(
     name='snowplow_analytics_sdk',
-    version='0.1.0',
+    version='0.1.0-a1',
     description='Snowplow Analytics Python SDK',
     author='Fred Blundun',
     url='https://www.python.org/sigs/snowplowsdk-sigs/',

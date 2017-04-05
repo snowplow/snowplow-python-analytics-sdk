@@ -1,4 +1,4 @@
-[![Build Status] [travis-image] ] [travis]
+[![Build Status][travis-image]][travis]
 [![Version][version-image]][version]
 [![License][license-image]][license]
 
@@ -14,7 +14,7 @@ Use this SDK with **[Apache Spark][spark]**, **[AWS Lambda][lambda]**, **[Databr
 
 The Snowplow enriched event is a relatively complex TSV string containing self-describing JSONs. Rather than work with this structure directly in Scala, use this Analytics SDK to interact with the enriched event format:
 
-![sdk-usage-img] [sdk-usage-img]
+![sdk-usage-img][sdk-usage-img]
 
 As the Snowplow enriched event format evolves towards a cleaner **[Apache Avro] [avro]**-based structure, we will be updating this Analytics SDK to maintain compatibility across different enriched event versions.
 
@@ -79,9 +79,9 @@ Run `python -m pytest` from the project root.
 
 ## Copyright and license
 
-The Snowplow Python Analytics SDK is copyright 2016 Snowplow Analytics Ltd.
+The Snowplow Python Analytics SDK is copyright 2016-2017 Snowplow Analytics Ltd.
 
-Licensed under the **[Apache License, Version 2.0] [license]** (the "License");
+Licensed under the **[Apache License, Version 2.0][license]** (the "License");
 you may not use this software except in compliance with the License.
 
 Unless required by applicable law or agreed to in writing, software
