@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2016 Snowplow Analytics Ltd. All rights reserved.
+    Copyright (c) 2016-2017 Snowplow Analytics Ltd. All rights reserved.
     This program is licensed to you under the Apache License Version 2.0,
     and you may not use this file except in compliance with the Apache License
     Version 2.0. You may obtain a copy of the Apache License Version 2.0 at
@@ -10,7 +10,7 @@
     express or implied. See the Apache License Version 2.0 for the specific
     language governing permissions and limitations there under.
     Authors: Fred Blundun
-    Copyright: Copyright (c) 2016 Snowplow Analytics Ltd
+    Copyright: Copyright (c) 2016-2017 Snowplow Analytics Ltd
     License: Apache License Version 2.0
 """
 
@@ -22,6 +22,6 @@ setup(
     description='Snowplow Analytics Python SDK',
     author='Fred Blundun',
     url='https://www.python.org/sigs/snowplowsdk-sigs/',
-    author_email='fred@snowplowanalytics.com',
+    author_email='support@snowplowanalytics.com',
     packages=['snowplow_analytics_sdk'],
 )
