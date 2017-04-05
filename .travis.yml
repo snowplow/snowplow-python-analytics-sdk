@@ -7,7 +7,7 @@ install:
   pip install flake8
 before_script:
   flake8 .
-script: python -m pytest
+script: python -m pytest --doctest-modules --ignore setup.py
 env:
   global:
     - secure: qy20VBds7KjYVtYBQIcgaGJkZKA4bcRdRAdjnqPcU7uxT4O/+aVpPg2oXyn3eES3H+BJHH/Ao9vgoGfR+pcUTDaGvLRWoDDX5g2IucBTPUMBzNy/syDrOEElaHNBNpDozPot0wxPCUrwkRQCzXx2jAc8mm9Bd0SF4eHcXQH34oeV94wG8NVNELRCdmiRyublUiEHEhJl5ycCDjP7GH+mIIf1Q6GVVr8r0KK+z6plttg8p4tR7J7LSRkCEQ24wCQaH9BDCtm85SmxN7cafwYoOQ17G9ZrRh1/kJ88SQN2iosSS5b4xfzB0xcey+w41RJWqKgCz6/AE8ORNmvbeNpeQ3/ThIuBbLhHl+rm0FjLOupPq8XUcmOFBCsIjvjeaeXHJegrHREyVZatq3oIhnrsODT09FgC8QzWWSdPo18SCqkrYQkn/cuMFU8Cc+ZlaOUA0HAT+N3D6Y4RaeqaBryfeyHRdfiXIrsXaXCaJRUO32HgGqo26ZARdEuboLCc+5lKolx6F7CONujGDUIMmvjby8/mUTJ83lyx+wjztC9UZK3qjVnwkeEnn65jKCFojo2eBMAxt1H0+gAjsTrQCnKi7wKTcsbygVwBzOktWRMlkyUQMqgqSNqttr51o50j7F9j15hSnlG1eRPoCJkAn34CpTDat3A6VhrIaPQh1hU3nHU=
