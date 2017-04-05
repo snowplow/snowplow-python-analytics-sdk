@@ -52,6 +52,7 @@ def convert_contexts(key, value):
 def convert_unstruct(key, value):
     return json_shredder.parse_unstruct(value)
 
+
 # Ordered list of names of enriched event fields together with the function required to convert them to JSON
 ENRICHED_EVENT_FIELD_TYPES = (
     ("app_id", convert_string),
