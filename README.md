@@ -51,16 +51,6 @@ For example, if an enriched event contained a `com.snowplowanalytics.snowplow/li
 
 ## Usage
 
-### Installation
-
-Install the library like this:
-
-```bash
-pip install snowplow_analytics_sdk
-```
-
-### Using the library
-
 ```python
 import snowplow_analytics_sdk.event_transformer
 import snowplow_analytics_sdk.snowplow_event_transformation_exception
@@ -72,10 +62,6 @@ except snowplow_analytics_sdk.snowplow_event_transformation_exception.SnowplowEv
         print(error_message)
 
 ```
-
-### Running the tests
-
-Run `python -m pytest` from the project root.
 
 ## Copyright and license
 
