@@ -1,3 +1,16 @@
+Version 0.2.0 (2017-04-06)
+--------------------------
+Add flake linting to CI process (#4)
+Add Vagrant environment (#5)
+Add support for checking and setting a DynamoDB-backed run manifest (#14)
+Add multiple Python versions to .travis.yml (#16)
+Migrate usage guide from README to dedicated snowplow/snowplow wiki page (#12)
+Migrate setup guide from README to dedicated snowplow/snowplow wiki page (#13)
+Rename CHANGELOG to CHANGES.txt (#8)
+Fix homepage URL (#10)
+Fix author email (#15)
+Update README markdown in according with CommonMark (#11)
+
 Version 0.1.0 (2016-05-17)
 --------------------------
 Initial release
