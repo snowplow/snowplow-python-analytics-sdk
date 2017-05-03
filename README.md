@@ -6,7 +6,7 @@
 
 ## Overview
 
-The **[Snowplow][snowplow]** Analytics SDK for Python lets you work with **[Snowplow enriched events] [enriched-events]** in your Python event processing and data modeling jobs.
+The **[Snowplow][snowplow]** Analytics SDK for Python lets you work with **[Snowplow enriched events][enriched-events]** in your Python event processing and data modeling jobs.
 
 Use this SDK with **[Apache Spark][spark]**, **[AWS Lambda][lambda]**, **[Databricks][databricks]** and other Python-compatible data processing frameworks.
 

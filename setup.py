@@ -14,11 +14,11 @@
     License: Apache License Version 2.0
 """
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='snowplow_analytics_sdk',
-    version='0.2.0',
+    version='0.2.1',
     description='Snowplow Analytics Python SDK',
     author='Fred Blundun',
     url='https://github.com/snowplow/snowplow-python-analytics-sdk',
