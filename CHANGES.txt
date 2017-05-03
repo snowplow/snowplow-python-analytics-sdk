@@ -1,3 +1,8 @@
+Version 0.2.1 (2017-05-03)
+--------------------------
+Block until run manifests table in created state (#20)
+List all run ids regardless max-keys (#21)
+
 Version 0.2.0 (2017-04-11)
 --------------------------
 Add flake linting to CI process (#4)
