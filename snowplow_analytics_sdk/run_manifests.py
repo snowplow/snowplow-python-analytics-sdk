@@ -14,7 +14,7 @@
 import sys
 
 from datetime import datetime
-
+from botocore.exceptions import ClientError
 
 DYNAMODB_RUNID_ATTRIBUTE = 'RunId'
 
@@ -42,37 +42,45 @@ def create_manifest_table(dynamodb_client, table_name):
     dynamodb_client - boto3 DynamoDB client (not service)
     table_name - string representing existing table name
     """
-    dynamodb_client.create_table(
-        AttributeDefinitions=[
-            {
-                'AttributeName': DYNAMODB_RUNID_ATTRIBUTE,
-                'AttributeType': 'S'
-            },
-        ],
-        TableName=table_name,
-        KeySchema=[
-            {
-                'AttributeName': DYNAMODB_RUNID_ATTRIBUTE,
-                'KeyType': 'HASH'
-            },
-        ],
-        ProvisionedThroughput={
-            'ReadCapacityUnits': 5,
-            'WriteCapacityUnits': 5
-        }
-    )
+    try:
+        dynamodb_client.create_table(
+            AttributeDefinitions=[
+                {
+                    'AttributeName': DYNAMODB_RUNID_ATTRIBUTE,
+                    'AttributeType': 'S'
+                },
+            ],
+            TableName=table_name,
+            KeySchema=[
+                {
+                    'AttributeName': DYNAMODB_RUNID_ATTRIBUTE,
+                    'KeyType': 'HASH'
+                },
+            ],
+            ProvisionedThroughput={
+                'ReadCapacityUnits': 5,
+                'WriteCapacityUnits': 5
+            }
+        )
+        dynamodb_client.get_waiter('table_exists').wait(TableName=table_name)
+    except ClientError as e:
+        # Table already exists
+        if e.response['Error']['Code'] == 'ResourceInUseException':
+            pass
+        else:
+            raise e
 
 
 def list_runids(s3_client, full_path):
     """Return list of all run ids inside S3 folder. It does not respect
     S3 pagination (`MaxKeys`) and returns **all** keys from bucket
-    
+
     Arguments:
     s3_client - boto3 S3 client (not service)
     full_path - full valid S3 path to events (such as enriched-archive)
                 example: s3://acme-events-bucket/main-pipeline/enriched-archive
     """
-    listing_finished = False                      # last response was not truncated
+    listing_finished = False                 # last response was not truncated
     run_ids_buffer = []
     last_continuation_token = None
 
@@ -159,7 +167,7 @@ def normalize_prefix(path):
 
 def clean_dict(dict):
     """Remove all keys with Nones as values
-    
+
     >>> clean_dict({'key': None})
     {}
     >>> clean_dict({'empty_s': ''})
