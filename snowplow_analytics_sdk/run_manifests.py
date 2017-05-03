@@ -11,6 +11,7 @@
     language governing permissions and limitations there under.
 """
 
+import sys
 
 from datetime import datetime
 
@@ -63,27 +64,37 @@ def create_manifest_table(dynamodb_client, table_name):
 
 
 def list_runids(s3_client, full_path):
-    """Return list of all run ids inside S3 folder
-
+    """Return list of all run ids inside S3 folder. It does not respect
+    S3 pagination (`MaxKeys`) and returns **all** keys from bucket
+    
     Arguments:
     s3_client - boto3 S3 client (not service)
     full_path - full valid S3 path to events (such as enriched-archive)
                 example: s3://acme-events-bucket/main-pipeline/enriched-archive
     """
+    listing_finished = False                      # last response was not truncated
+    run_ids_buffer = []
+    last_continuation_token = None
+
     (bucket, prefix) = split_full_path(full_path)
-    if prefix is None:
-        response = s3_client.list_objects_v2(Bucket=bucket, Delimiter='/')
-    else:
-        response = s3_client.list_objects_v2(
-            Bucket=bucket,
-            Prefix=prefix,
-            Delimiter='/')
-    common_prefixes = response.get('CommonPrefixes')
-    if common_prefixes is None:
-        return None
-    else:
-        run_ids = [extract_run_id(key['Prefix']) for key in common_prefixes]
-        return [run_id for run_id in run_ids if run_id is not None]
+
+    while not listing_finished:
+        options = clean_dict({
+            'Bucket': bucket,
+            'Prefix': prefix,
+            'Delimiter': '/',
+            'ContinuationToken': last_continuation_token
+        })
+
+        response = s3_client.list_objects_v2(**options)
+        keys = [extract_run_id(key['Prefix']) for key in response.get('CommonPrefixes', [])]
+        run_ids_buffer.extend([key for key in keys if key is not None])
+        last_continuation_token = response.get('NextContinuationToken', None)
+
+        if not response['IsTruncated']:
+            listing_finished = True
+
+    return run_ids_buffer
 
 
 def split_full_path(path):
@@ -106,7 +117,7 @@ def split_full_path(path):
     parts = path.split('/')
     bucket = parts[0]
     path = '/'.join(parts[1:])
-    return (bucket, normalize_prefix(path))
+    return bucket, normalize_prefix(path)
 
 
 def extract_run_id(key):
@@ -144,6 +155,20 @@ def normalize_prefix(path):
         return path
     else:
         return path + '/'
+
+
+def clean_dict(dict):
+    """Remove all keys with Nones as values
+    
+    >>> clean_dict({'key': None})
+    {}
+    >>> clean_dict({'empty_s': ''})
+    {'empty_s': ''}
+    """
+    if sys.version_info[0] < 3:
+        return {k: v for k, v in dict.iteritems() if v is not None}
+    else:
+        return {k: v for k, v in dict.items() if v is not None}
 
 
 def add_to_manifest(dynamodb_client, table_name, run_id):
