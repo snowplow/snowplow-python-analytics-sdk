@@ -1,3 +1,7 @@
+Version 0.2.2 (2017-05-05)
+--------------------------
+Mark run ids archived to Glacier as processed (close #23)
+
 Version 0.2.1 (2017-05-03)
 --------------------------
 Block until run manifests table in created state (#20)
