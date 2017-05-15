@@ -18,7 +18,7 @@ from setuptools import setup
 
 setup(
     name='snowplow_analytics_sdk',
-    version='0.2.3',
+    version='0.2.3-b1',
     description='Snowplow Analytics Python SDK',
     author='Fred Blundun',
     url='https://github.com/snowplow/snowplow-python-analytics-sdk',
