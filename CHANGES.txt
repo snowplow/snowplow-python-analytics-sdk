@@ -1,3 +1,7 @@
+Version 0.2.3 (2017-05-15)
+--------------------------
+Use standard regular expression for schema URIs (#24)
+
 Version 0.2.2 (2017-05-05)
 --------------------------
 Mark run ids archived to Glacier as processed (#23)
