@@ -16,17 +16,30 @@
 
 import re
 import json
+
 from snowplow_analytics_sdk.snowplow_event_transformation_exception import SnowplowEventTransformationException
 
+
+# TODO: remove in 0.3.0
+# See: https://github.com/snowplow/snowplow-python-analytics-sdk/issues/27
 SCHEMA_PATTERN = re.compile(""".+:([a-zA-Z0-9_\.]+)/([a-zA-Z0-9_]+)/[^/]+/(.*)""")
+
+SCHEMA_URI = ("^iglu:"                        # Protocol
+              "([a-zA-Z0-9-_.]+)/"            # Vendor
+              "([a-zA-Z0-9-_]+)/"             # Name
+              "([a-zA-Z0-9-_]+)/"             # Format
+              "([1-9][0-9]*"                  # MODEL (cannot start with 0)
+              "(?:-(?:0|[1-9][0-9]*)){2})$")  # REVISION and ADDITION
+
+SCHEMA_URI_REGEX = re.compile(SCHEMA_URI)
 
 
 def extract_schema(uri):
     """
     Extracts Schema information from Iglu URI
 
-    >>> extract_schema("iglu:com.acme-corporation_underscore/event_name-dash/jsonschema/1-10-1")
-    {'version': '1-10-1', 'vendor': 'com.acme-corporation_underscore', 'name': 'event_name-dash', 'format': 'jsonschema'}
+    >>> extract_schema("iglu:com.acme-corporation_underscore/event_name-dash/jsonschema/1-10-1")['vendor']
+    'com.acme-corporation_underscore'
     """
     match = re.match(SCHEMA_URI_REGEX, uri)
     if match:
@@ -47,16 +60,11 @@ def fix_schema(prefix, schema):
     """
     Create an Elasticsearch field name from a schema string
     """
-    match = re.match(SCHEMA_PATTERN, schema)
-    if match:
-        snake_case_organization = match.group(1).replace('.', '_').lower()
-        snake_case_name = re.sub('([^A-Z_])([A-Z])', '\g<1>_\g<2>', match.group(2)).lower()
-        model = match.group(3).split('-')[0]
-        return "{}_{}_{}_{}".format(prefix, snake_case_organization, snake_case_name, model)
-    else:
-        raise SnowplowEventTransformationException([
-            "Schema {} does not conform to regular expression {}".format(schema, SCHEMA_PATTERN)
-        ])
+    schema_dict = extract_schema(schema)
+    snake_case_organization = schema_dict['vendor'].replace('.', '_').lower()
+    snake_case_name = re.sub('([^A-Z_])([A-Z])', '\g<1>_\g<2>', schema_dict['name']).lower()
+    model = schema_dict['version'].split('-')[0]
+    return "{}_{}_{}_{}".format(prefix, snake_case_organization, snake_case_name, model)
 
 
 def parse_contexts(contexts):
