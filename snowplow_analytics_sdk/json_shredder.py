@@ -21,6 +21,28 @@ from snowplow_analytics_sdk.snowplow_event_transformation_exception import Snowp
 SCHEMA_PATTERN = re.compile(""".+:([a-zA-Z0-9_\.]+)/([a-zA-Z0-9_]+)/[^/]+/(.*)""")
 
 
+def extract_schema(uri):
+    """
+    Extracts Schema information from Iglu URI
+
+    >>> extract_schema("iglu:com.acme-corporation_underscore/event_name-dash/jsonschema/1-10-1")
+    {'version': '1-10-1', 'vendor': 'com.acme-corporation_underscore', 'name': 'event_name-dash', 'format': 'jsonschema'}
+    """
+    match = re.match(SCHEMA_URI_REGEX, uri)
+    if match:
+        return {
+            'vendor': match.group(1),
+            'name': match.group(2),
+            'format': match.group(3),
+            'version': match.group(4)
+
+        }
+    else:
+        raise SnowplowEventTransformationException([
+            "Schema {} does not conform to regular expression {}".format(uri, SCHEMA_URI)
+        ])
+
+
 def fix_schema(prefix, schema):
     """
     Create an Elasticsearch field name from a schema string
