@@ -200,7 +200,7 @@ def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolo
     """
     Convert a Snowplow enriched event in the form of an array of fields into a JSON
     """
-    if len(event) != len(known_fields):
+    if len(event) > len(known_fields):
         raise SnowplowEventTransformationException(
             ["Expected {} fields, received {} fields.".format(len(known_fields), len(event))]
         )
