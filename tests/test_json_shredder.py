@@ -44,7 +44,7 @@ def test_parse_contexts():
     expected = [("contexts_com_acme_duplicated_20", [{"value": 1}, {"value": 2}]),
                 ("contexts_com_acme_unduplicated_1", [{"type": "test"}])]
 
-    parsed_context = parse_contexts(actual);
+    parsed_context = parse_contexts(actual)
     assert (sorted(parsed_context) == sorted(expected))
 
 
