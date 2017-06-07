@@ -14,8 +14,7 @@
     License: Apache License Version 2.0
 """
 
-from snowplow_analytics_sdk.json_shredder import parse_contexts
-from snowplow_analytics_sdk.json_shredder import parse_unstruct
+from snowplow_analytics_sdk.json_shredder import parse_contexts, parse_unstruct
 
 
 def test_parse_contexts():
@@ -44,7 +43,9 @@ def test_parse_contexts():
     }"""
     expected = [("contexts_com_acme_duplicated_20", [{"value": 1}, {"value": 2}]),
                 ("contexts_com_acme_unduplicated_1", [{"type": "test"}])]
-    assert (parse_contexts(actual) == expected)
+
+    parsed_context = parse_contexts(actual);
+    assert (sorted(parsed_context) == sorted(expected))
 
 
 def test_unstruct():
