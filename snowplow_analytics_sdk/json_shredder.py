@@ -113,7 +113,7 @@ def parse_contexts(contexts):
     errors = set()
 
     for context in data:
-        error_encountered = False;
+        error_encountered = False
         if 'schema' in context:
             context_schema = context['schema']
         else:
