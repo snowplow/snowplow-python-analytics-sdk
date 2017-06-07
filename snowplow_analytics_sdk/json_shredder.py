@@ -104,19 +104,43 @@ def parse_contexts(contexts):
     ]
     """
     my_json = json.loads(contexts)
-    data = my_json['data']
+    if 'data' in my_json:
+        data = my_json['data']
+    else:
+        raise SnowplowEventTransformationException("Could not extract data field from custom context")
     distinct_contexts = {}
+
+    errors = set()
+
     for context in data:
-        schema = fix_schema("contexts", context['schema'])
-        inner_data = context['data']
-        if schema not in distinct_contexts:
-            distinct_contexts[schema] = [inner_data]
+        error_encountered = False;
+        if 'schema' in context:
+            context_schema = context['schema']
         else:
-            distinct_contexts[schema].append(inner_data)
-    output = []
-    for key in distinct_contexts:
-        output.append((key, distinct_contexts[key]))
-    return output
+            errors.add("Context JSON did not contain a stringly typed schema field")
+            error_encountered = True
+        if 'data' in context:
+            inner_data = context['data']
+        else:
+            errors.add("Could not extract inner data field from custom context")
+            error_encountered = True
+        if error_encountered:
+            continue
+        try:
+            schema = fix_schema("contexts", context_schema)
+            if schema not in distinct_contexts:
+                distinct_contexts[schema] = [inner_data]
+            else:
+                distinct_contexts[schema].append(inner_data)
+        except SnowplowEventTransformationException as sete:
+            errors.add(sete.message)
+    if errors:
+        raise SnowplowEventTransformationException(errors)
+    else:
+        output = []
+        for key in distinct_contexts:
+            output.append((key, distinct_contexts[key]))
+        return output
 
 
 def parse_unstruct(unstruct):
@@ -145,11 +169,21 @@ def parse_unstruct(unstruct):
     ]
     """
     my_json = json.loads(unstruct)
-    data = my_json['data']
+    errors = []
+    if 'data' in my_json:
+        data = my_json['data']
+    else:
+        raise SnowplowEventTransformationException("Could not extract data field from unstructured event")
     schema = data['schema']
+    if 'schema' in data:
+        schema = data['schema']
+    else:
+        errors += ["Unstructured event did not contain a stringly typed schema field"]
     if 'data' in data:
         inner_data = data['data']
     else:
-        raise SnowplowEventTransformationException(["Could not extract inner data field from unstructured event"])
+        errors += ["Could not extract inner data field from unstructured event"]
+    if errors:
+        raise SnowplowEventTransformationException(errors)
     fixed_schema = fix_schema("unstruct_event", schema)
     return [(fixed_schema, inner_data)]
