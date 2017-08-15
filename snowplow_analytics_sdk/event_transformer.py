@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2016 Snowplow Analytics Ltd. All rights reserved.
+    Copyright (c) 2016-2017 Snowplow Analytics Ltd. All rights reserved.
     This program is licensed to you under the Apache License Version 2.0,
     and you may not use this file except in compliance with the Apache License
     Version 2.0. You may obtain a copy of the Apache License Version 2.0 at
@@ -10,7 +10,7 @@
     express or implied. See the Apache License Version 2.0 for the specific
     language governing permissions and limitations there under.
     Authors: Fred Blundun
-    Copyright: Copyright (c) 2016 Snowplow Analytics Ltd
+    Copyright: Copyright (c) 2016-2017 Snowplow Analytics Ltd
     License: Apache License Version 2.0
 """
 
@@ -45,12 +45,12 @@ def convert_tstamp(key, value):
     return [(key, value.replace(' ', 'T') + 'Z')]
 
 
-def convert_contexts(key, value):
-    return json_shredder.parse_contexts(value)
+def convert_contexts(key, value, add_schema_contexts=False):
+    return json_shredder.parse_contexts(value, add_schema_contexts)
 
 
-def convert_unstruct(key, value):
-    return json_shredder.parse_unstruct(value)
+def convert_unstruct(key, value, add_schema=False):
+    return json_shredder.parse_unstruct(value, add_schema)
 
 
 # Ordered list of names of enriched event fields together with the function required to convert them to JSON
@@ -189,14 +189,14 @@ ENRICHED_EVENT_FIELD_TYPES = (
 )
 
 
-def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True):
+def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True, add_schema=False, add_schema_contexts=False):
     """
     Convert a Snowplow enriched event TSV into a JSON
     """
-    return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data)
+    return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data, add_schema, add_schema_contexts)
 
 
-def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True):
+def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True, add_schema=False, add_schema_contexts=False):
     """
     Convert a Snowplow enriched event in the form of an array of fields into a JSON
     """
@@ -213,7 +213,14 @@ def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolo
             key = known_fields[i][0]
             if event[i] != '':
                 try:
-                    kvpairs = known_fields[i][1](key, event[i])
+                    field = known_fields[i][0]
+                    function = known_fields[i][1]
+                    if field == 'unstruct_event':
+                        kvpairs = function(key, event[i], add_schema)
+                    elif field == 'contexts' or field == 'derived_contexts':
+                        kvpairs = function(key, event[i], add_schema_contexts)
+                    else:
+                        kvpairs = function(key, event[i])
                     for kvpair in kvpairs:
                         output[kvpair[0]] = kvpair[1]
                 except SnowplowEventTransformationException as sete:
