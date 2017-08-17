@@ -45,12 +45,12 @@ def convert_tstamp(key, value):
     return [(key, value.replace(' ', 'T') + 'Z')]
 
 
-def convert_contexts(key, value, add_schema_contexts=False):
-    return json_shredder.parse_contexts(value, add_schema_contexts)
+def convert_contexts(key, value, shred_format='elasticsearch'):
+    return json_shredder.parse_contexts(value, shred_format)
 
 
-def convert_unstruct(key, value, add_schema=False):
-    return json_shredder.parse_unstruct(value, add_schema)
+def convert_unstruct(key, value, shred_format='elasticsearch'):
+    return json_shredder.parse_unstruct(value, shred_format)
 
 
 # Ordered list of names of enriched event fields together with the function required to convert them to JSON
@@ -189,14 +189,14 @@ ENRICHED_EVENT_FIELD_TYPES = (
 )
 
 
-def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True, add_schema=False, add_schema_contexts=False):
+def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True, shred_format='elasticsearch'):
     """
     Convert a Snowplow enriched event TSV into a JSON
     """
-    return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data, add_schema, add_schema_contexts)
+    return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data, shred_format)
 
 
-def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True, add_schema=False, add_schema_contexts=False):
+def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True, shred_format='elasticsearch'):
     """
     Convert a Snowplow enriched event in the form of an array of fields into a JSON
     """
@@ -216,9 +216,9 @@ def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolo
                     field = known_fields[i][0]
                     function = known_fields[i][1]
                     if field == 'unstruct_event':
-                        kvpairs = function(key, event[i], add_schema)
+                        kvpairs = function(key, event[i], shred_format)
                     elif field == 'contexts' or field == 'derived_contexts':
-                        kvpairs = function(key, event[i], add_schema_contexts)
+                        kvpairs = function(key, event[i], shred_format)
                     else:
                         kvpairs = function(key, event[i])
                     for kvpair in kvpairs:

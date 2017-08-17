@@ -16,7 +16,7 @@
 
 from snowplow_analytics_sdk.json_shredder import parse_contexts, parse_unstruct
 
-def test_parse_contexts_with_schema():
+def test_parse_contexts_redshift():
     json_input = """{
       "data": [
         {
@@ -42,43 +42,49 @@ def test_parse_contexts_with_schema():
     }"""
 
     expected = [
-        ('contexts_com_acme_unduplicated_1', [{
-                        'unique': True,
-                        'schema':
-                            {
-                                'version': '1-0-0',
-                                'vendor': 'com.acme',
-                                'name': 'unduplicated',
-                                'format': 'jsonschema'
-                            }
+            ('com_acme_unduplicated_1', [{
+                'schema':
+                    {
+                        'version': '1-0-0',
+                        'vendor': 'com.acme',
+                        'name': 'unduplicated',
+                        'format': 'jsonschema'
+                    },
+                'data': {
+                    'unique': True
+                },
                         }]),
-        ('contexts_com_acme_duplicated_1', [
+        ('com_acme_duplicated_1', [
             {
-                'value': 1,
                 'schema':
                     {
                         'version': '1-0-0',
                         'vendor': 'com.acme',
                         'name': 'duplicated',
                         'format': 'jsonschema'
-                    }
+                    },
+                'data': {
+                    'value': 1
+                }
             },
             {
-                'value': 2,
-                'schema': 
+                'schema':
                     {
                         'version': '1-0-0',
                         'vendor': 'com.acme',
                         'name': 'duplicated',
                         'format': 'jsonschema'
-                    }
+                    },
+                'data': {
+                    'value': 2
+                },
             }
         ])
     ]
-    result = parse_contexts(json_input, include_schema=True)
+    result = parse_contexts(json_input, shred_format='redshift')
     assert(sorted(result) == sorted(expected))
 
-def test_parse_contexts_without_schema():
+def test_parse_contexts_elasticsearch():
     json_input = """{
       "data": [
         {
@@ -107,10 +113,10 @@ def test_parse_contexts_without_schema():
         ('contexts_com_acme_unduplicated_1', [{'unique': True}]),
         ('contexts_com_acme_duplicated_1', [{'value': 1}, {'value': 2}])
     ]
-    result = parse_contexts(json_input, include_schema=False)
+    result = parse_contexts(json_input, shred_format='elasticsearch')
     assert(sorted(result) == sorted(expected))
 
-def test_parse_unstruct_with_schema():
+def test_parse_unstruct_redshift():
     json_input = """{
       "data": {
         "data": {
@@ -122,22 +128,24 @@ def test_parse_unstruct_with_schema():
     }"""
     expected = [
       (
-        "unstruct_event_com_snowplowanalytics_snowplow_link_click_1", {
+        "com_snowplowanalytics_snowplow_link_click_1", {
           "schema": {
             "vendor": "com.snowplowanalytics.snowplow",
             "name": "link_click",
             "format": "jsonschema",
             "version": "1-0-1"
           },
-          "key": "value"
+          "data": {
+            "key": "value"
+          }
         }
       )
     ]
 
-    result = parse_unstruct(json_input, include_schema=True)
+    result = parse_unstruct(json_input, shred_format='redshift')
     assert(result == expected)
 
-def test_parse_unstruct_without_schema():
+def test_parse_unstruct_elasticsearch():
     json_input = """{
       "data": {
         "data": {
@@ -155,5 +163,5 @@ def test_parse_unstruct_without_schema():
       )
     ]
 
-    result = parse_unstruct(json_input)
+    result = parse_unstruct(json_input, shred_format='elasticsearch')
     assert(result == expected)

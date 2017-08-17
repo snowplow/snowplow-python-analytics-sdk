@@ -309,12 +309,6 @@ expected = json.loads("""{
           "loadEventEnd" : 0
         } ],
         "unstruct_event_com_snowplowanalytics_snowplow_link_click_1" : {
-          "schema": {
-            "vendor": "com.snowplowanalytics.snowplow",
-            "name": "link_click",
-            "format": "jsonschema",
-            "version": "1-0-1"
-          },
           "targetUrl" : "http://www.example.com",
           "elementClasses" : [ "foreground" ],
           "elementId" : "exampleLink"
@@ -384,74 +378,88 @@ expected2 = json.loads("""{
         "page_urlpath" : "/product/index.html",
         "page_urlquery" : "id=GTM-DLRG",
         "page_urlfragment" : "4-conclusion",
-        "contexts_org_schema_web_page_1" : [ {
+        "org_schema_web_page_1" : [ {
           "schema": {
             "vendor": "org.schema",
             "name": "web_page",
             "format": "jsonschema",
             "version": "1-0-0"
           },
-          "genre" : "blog",
-          "inLanguage" : "en-US",
-          "datePublished" : "2014-11-06T00:00:00Z",
-          "author" : "Fred Blundun",
-          "breadcrumb" : [ "blog", "releases" ],
-          "keywords" : [ "snowplow", "javascript", "tracker", "event" ]
+          "data": {
+            "genre" : "blog",
+            "inLanguage" : "en-US",
+            "datePublished" : "2014-11-06T00:00:00Z",
+            "author" : "Fred Blundun",
+            "breadcrumb" : [ "blog", "releases" ],
+            "keywords" : [ "snowplow", "javascript", "tracker", "event" ]
+          }
         } ],
-        "contexts_org_w3_performance_timing_1" : [ {
+        "org_w3_performance_timing_1" : [ {
           "schema": {
             "vendor": "org.w3",
             "name": "performance_timing",
             "format": "jsonschema",
             "version": "1-0-0"
           },
-          "navigationStart" : 1415358089861,
-          "unloadEventStart" : 1415358090270,
-          "unloadEventEnd" : 1415358090287,
-          "redirectStart" : 0,
-          "redirectEnd" : 0,
-          "fetchStart" : 1415358089870,
-          "domainLookupStart" : 1415358090102,
-          "domainLookupEnd" : 1415358090102,
-          "connectStart" : 1415358090103,
-          "connectEnd" : 1415358090183,
-          "requestStart" : 1415358090183,
-          "responseStart" : 1415358090265,
-          "responseEnd" : 1415358090265,
-          "domLoading" : 1415358090270,
-          "domInteractive" : 1415358090886,
-          "domContentLoadedEventStart" : 1415358090968,
-          "domContentLoadedEventEnd" : 1415358091309,
-          "domComplete" : 0,
-          "loadEventStart" : 0,
-          "loadEventEnd" : 0
+          "data": {
+            "navigationStart" : 1415358089861,
+            "unloadEventStart" : 1415358090270,
+            "unloadEventEnd" : 1415358090287,
+            "redirectStart" : 0,
+            "redirectEnd" : 0,
+            "fetchStart" : 1415358089870,
+            "domainLookupStart" : 1415358090102,
+            "domainLookupEnd" : 1415358090102,
+            "connectStart" : 1415358090103,
+            "connectEnd" : 1415358090183,
+            "requestStart" : 1415358090183,
+            "responseStart" : 1415358090265,
+            "responseEnd" : 1415358090265,
+            "domLoading" : 1415358090270,
+            "domInteractive" : 1415358090886,
+            "domContentLoadedEventStart" : 1415358090968,
+            "domContentLoadedEventEnd" : 1415358091309,
+            "domComplete" : 0,
+            "loadEventStart" : 0,
+            "loadEventEnd" : 0
+          }
         } ],
-        "unstruct_event_com_snowplowanalytics_snowplow_link_click_1" : {
-          "targetUrl" : "http://www.example.com",
-          "elementClasses" : [ "foreground" ],
-          "elementId" : "exampleLink"
+        "com_snowplowanalytics_snowplow_link_click_1" : {
+          "schema": {
+            "vendor": "com.snowplowanalytics.snowplow",
+            "name": "link_click",
+            "format": "jsonschema",
+            "version": "1-0-1"
+          },
+          "data": {
+            "targetUrl" : "http://www.example.com",
+            "elementClasses" : [ "foreground" ],
+            "elementId" : "exampleLink"
+          }
         },
         "br_features_pdf" : true,
         "br_features_flash" : false,
-        "contexts_com_snowplowanalytics_snowplow_ua_parser_context_1": [{
+        "com_snowplowanalytics_snowplow_ua_parser_context_1": [{
           "schema": {
             "vendor": "com.snowplowanalytics.snowplow",
             "name": "ua_parser_context",
             "format": "jsonschema",
             "version": "1-0-0"
           },
-          "useragentFamily": "IE",
-          "useragentMajor": "7",
-          "useragentMinor": "0",
-          "useragentPatch": null,
-          "useragentVersion": "IE 7.0",
-          "osFamily": "Windows XP",
-          "osMajor": null,
-          "osMinor": null,
-          "osPatch": null,
-          "osPatchMinor": null,
-          "osVersion": "Windows XP",
-          "deviceFamily": "Other"
+          "data": {
+            "useragentFamily": "IE",
+            "useragentMajor": "7",
+            "useragentMinor": "0",
+            "useragentPatch": null,
+            "useragentVersion": "IE 7.0",
+            "osFamily": "Windows XP",
+            "osMajor": null,
+            "osMinor": null,
+            "osPatch": null,
+            "osPatchMinor": null,
+            "osVersion": "Windows XP",
+            "deviceFamily": "Other"
+          }
         }],
         "domain_sessionid": "2b15e5c8-d3b1-11e4-b9d6-1681e6b88ec1",
         "derived_tstamp": "2013-11-26T00:03:57.886Z",
@@ -463,11 +471,11 @@ expected2 = json.loads("""{
         "true_tstamp": "2013-11-26T00:03:57.886Z"
       }""")
 
-def test_transform_with_unstruct_contexts():
-    actual = transform(tsv, add_schema=True)
+def test_transform_with_elasticsearch_format():
+    actual = transform(tsv, shred_format='elasticsearch')
     assert(actual == expected)
 
-def test_transform_with_contexts():
-    actual = transform(tsv, add_schema=False, add_schema_contexts=True)
+def test_transform_with_redshift_format():
+    actual = transform(tsv, shred_format='redshift')
     assert(actual == expected2)
 
