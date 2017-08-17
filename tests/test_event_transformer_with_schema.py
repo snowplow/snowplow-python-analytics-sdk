@@ -9,13 +9,12 @@
     an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
     express or implied. See the Apache License Version 2.0 for the specific
     language governing permissions and limitations there under.
-    Authors: Fred Blundun
+    Authors: Fred Blundun, Mike Robins
     Copyright: Copyright (c) 2016-2017 Snowplow Analytics Ltd
     License: Apache License Version 2.0
 """
 
 from snowplow_analytics_sdk.event_transformer import transform
-from snowplow_analytics_sdk.snowplow_event_transformation_exception import SnowplowEventTransformationException
 import json
 
 unstruct_json = """{
@@ -339,39 +338,144 @@ expected = json.loads("""{
         "true_tstamp": "2013-11-26T00:03:57.886Z"
       }""")
 
+expected2 = json.loads("""{
+        "geo_location" : "37.443604,-122.4124",
+        "app_id" : "angry-birds",
+        "platform" : "web",
+        "etl_tstamp" : "2017-01-26T00:01:25.292Z",
+        "collector_tstamp" : "2013-11-26T00:02:05Z",
+        "dvce_created_tstamp" : "2013-11-26T00:03:57.885Z",
+        "event" : "page_view",
+        "event_id" : "c6ef3124-b53a-4b13-a233-0088f79dcbcb",
+        "txn_id" : 41828,
+        "name_tracker" : "cloudfront-1",
+        "v_tracker" : "js-2.1.0",
+        "v_collector" : "clj-tomcat-0.1.0",
+        "v_etl" : "serde-0.5.2",
+        "user_id" : "jon.doe@email.com",
+        "user_ipaddress" : "92.231.54.234",
+        "user_fingerprint" : "2161814971",
+        "domain_userid" : "bc2e92ec6c204a14",
+        "domain_sessionidx" : 3,
+        "network_userid" : "ecdff4d0-9175-40ac-a8bb-325c49733607",
+        "geo_country" : "US",
+        "geo_region" : "TX",
+        "geo_city" : "New York",
+        "geo_zipcode" : "94109",
+        "geo_latitude" : 37.443604,
+        "geo_longitude" : -122.4124,
+        "geo_region_name" : "Florida",
+        "ip_isp" : "FDN Communications",
+        "ip_organization" : "Bouygues Telecom",
+        "ip_domain" : "nuvox.net",
+        "ip_netspeed" : "Cable/DSL",
+        "page_url" : "http://www.snowplowanalytics.com",
+        "page_title" : "On Analytics",
+        "page_urlscheme" : "http",
+        "page_urlhost" : "www.snowplowanalytics.com",
+        "page_urlport" : 80,
+        "page_urlpath" : "/product/index.html",
+        "page_urlquery" : "id=GTM-DLRG",
+        "page_urlfragment" : "4-conclusion",
+        "org_schema_web_page_1" : [ {
+          "schema": {
+            "vendor": "org.schema",
+            "name": "web_page",
+            "format": "jsonschema",
+            "version": "1-0-0"
+          },
+          "data": {
+            "genre" : "blog",
+            "inLanguage" : "en-US",
+            "datePublished" : "2014-11-06T00:00:00Z",
+            "author" : "Fred Blundun",
+            "breadcrumb" : [ "blog", "releases" ],
+            "keywords" : [ "snowplow", "javascript", "tracker", "event" ]
+          }
+        } ],
+        "org_w3_performance_timing_1" : [ {
+          "schema": {
+            "vendor": "org.w3",
+            "name": "performance_timing",
+            "format": "jsonschema",
+            "version": "1-0-0"
+          },
+          "data": {
+            "navigationStart" : 1415358089861,
+            "unloadEventStart" : 1415358090270,
+            "unloadEventEnd" : 1415358090287,
+            "redirectStart" : 0,
+            "redirectEnd" : 0,
+            "fetchStart" : 1415358089870,
+            "domainLookupStart" : 1415358090102,
+            "domainLookupEnd" : 1415358090102,
+            "connectStart" : 1415358090103,
+            "connectEnd" : 1415358090183,
+            "requestStart" : 1415358090183,
+            "responseStart" : 1415358090265,
+            "responseEnd" : 1415358090265,
+            "domLoading" : 1415358090270,
+            "domInteractive" : 1415358090886,
+            "domContentLoadedEventStart" : 1415358090968,
+            "domContentLoadedEventEnd" : 1415358091309,
+            "domComplete" : 0,
+            "loadEventStart" : 0,
+            "loadEventEnd" : 0
+          }
+        } ],
+        "com_snowplowanalytics_snowplow_link_click_1" : {
+          "schema": {
+            "vendor": "com.snowplowanalytics.snowplow",
+            "name": "link_click",
+            "format": "jsonschema",
+            "version": "1-0-1"
+          },
+          "data": {
+            "targetUrl" : "http://www.example.com",
+            "elementClasses" : [ "foreground" ],
+            "elementId" : "exampleLink"
+          }
+        },
+        "br_features_pdf" : true,
+        "br_features_flash" : false,
+        "com_snowplowanalytics_snowplow_ua_parser_context_1": [{
+          "schema": {
+            "vendor": "com.snowplowanalytics.snowplow",
+            "name": "ua_parser_context",
+            "format": "jsonschema",
+            "version": "1-0-0"
+          },
+          "data": {
+            "useragentFamily": "IE",
+            "useragentMajor": "7",
+            "useragentMinor": "0",
+            "useragentPatch": null,
+            "useragentVersion": "IE 7.0",
+            "osFamily": "Windows XP",
+            "osMajor": null,
+            "osMinor": null,
+            "osPatch": null,
+            "osPatchMinor": null,
+            "osVersion": "Windows XP",
+            "deviceFamily": "Other"
+          }
+        }],
+        "domain_sessionid": "2b15e5c8-d3b1-11e4-b9d6-1681e6b88ec1",
+        "derived_tstamp": "2013-11-26T00:03:57.886Z",
+        "event_vendor": "com.snowplowanalytics.snowplow",
+        "event_name": "link_click",
+        "event_format": "jsonschema",
+        "event_version": "1-0-0",
+        "event_fingerprint": "e3dbfa9cca0412c3d4052863cefb547f",
+        "true_tstamp": "2013-11-26T00:03:57.886Z"
+      }""")
 
-def test_transform():
-    actual = transform(tsv)
+
+def test_transform_with_elasticsearch_format():
+    actual = transform(tsv, shred_format='elasticsearch')
     assert(actual == expected)
 
 
-def test_wrong_tsv_length():
-    exception = None
-    try:
-        transform("two\tfields")
-    except SnowplowEventTransformationException as sete:
-        exception = sete
-    assert(exception.message == "Expected 131 fields, received 2 fields.")
-
-
-def test_malformed_field():
-    exception = None
-    malformed_fields_tsv = '\t' * 110 + 'bad_tax_base' + '\t' * 20
-
-    try:
-        transform(malformed_fields_tsv)
-    except SnowplowEventTransformationException as sete:
-        exception = sete
-    assert(exception.message.startswith(
-      "Unexpected exception parsing field with key tr_tax_base and value bad_tax_base"))
-
-
-def test_multiple_malformed_fields():
-    exception = None
-    malformed_fields_tsv = '\t' * 52 + 'bad_contexts' + '\t' * 50 + 'bad_dvce_ismobile' + '\t' * 28
-
-    try:
-        transform(malformed_fields_tsv)
-    except SnowplowEventTransformationException as sete:
-        exception = sete
-    assert(len(exception.error_messages) == 2)
+def test_transform_with_redshift_format():
+    actual = transform(tsv, shred_format='redshift')
+    assert(actual == expected2)

@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2016 Snowplow Analytics Ltd. All rights reserved.
+    Copyright (c) 2016-2017 Snowplow Analytics Ltd. All rights reserved.
     This program is licensed to you under the Apache License Version 2.0,
     and you may not use this file except in compliance with the Apache License
     Version 2.0. You may obtain a copy of the Apache License Version 2.0 at
@@ -10,7 +10,7 @@
     express or implied. See the Apache License Version 2.0 for the specific
     language governing permissions and limitations there under.
     Authors: Fred Blundun
-    Copyright: Copyright (c) 2016 Snowplow Analytics Ltd
+    Copyright: Copyright (c) 2016-2017 Snowplow Analytics Ltd
     License: Apache License Version 2.0
 """
 
@@ -34,7 +34,8 @@ def convert_bool(key, value):
         return [(key, True)]
     elif value == '0':
         return [(key, False)]
-    raise SnowplowEventTransformationException(["Invalid value {} for field {}".format(value, key)])
+    raise SnowplowEventTransformationException(
+        ["Invalid value {} for field {}".format(value, key)])
 
 
 def convert_double(key, value):
@@ -45,12 +46,12 @@ def convert_tstamp(key, value):
     return [(key, value.replace(' ', 'T') + 'Z')]
 
 
-def convert_contexts(key, value):
-    return json_shredder.parse_contexts(value)
+def convert_contexts(key, value, shred_format='elasticsearch'):
+    return json_shredder.parse_contexts(value, shred_format)
 
 
-def convert_unstruct(key, value):
-    return json_shredder.parse_unstruct(value)
+def convert_unstruct(key, value, shred_format='elasticsearch'):
+    return json_shredder.parse_unstruct(value, shred_format)
 
 
 # Ordered list of names of enriched event fields together with the function required to convert them to JSON
@@ -189,31 +190,41 @@ ENRICHED_EVENT_FIELD_TYPES = (
 )
 
 
-def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True):
+def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True, shred_format='elasticsearch'):
     """
     Convert a Snowplow enriched event TSV into a JSON
     """
-    return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data)
+    return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data, shred_format)
 
 
-def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True):
+def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True,
+                       shred_format='elasticsearch'):
     """
     Convert a Snowplow enriched event in the form of an array of fields into a JSON
     """
     if len(event) != len(known_fields):
         raise SnowplowEventTransformationException(
-            ["Expected {} fields, received {} fields.".format(len(known_fields), len(event))]
+            ["Expected {} fields, received {} fields.".format(
+                len(known_fields), len(event))]
         )
     else:
         output = {}
         errors = []
         if add_geolocation_data and event[LATITUDE_INDEX] != '' and event[LONGITUDE_INDEX] != '':
-            output['geo_location'] = event[LATITUDE_INDEX] + ',' + event[LONGITUDE_INDEX]
+            output['geo_location'] = event[LATITUDE_INDEX] + \
+                ',' + event[LONGITUDE_INDEX]
         for i in range(len(event)):
             key = known_fields[i][0]
             if event[i] != '':
                 try:
-                    kvpairs = known_fields[i][1](key, event[i])
+                    field = known_fields[i][0]
+                    function = known_fields[i][1]
+                    if field == 'unstruct_event':
+                        kvpairs = function(key, event[i], shred_format)
+                    elif field == 'contexts' or field == 'derived_contexts':
+                        kvpairs = function(key, event[i], shred_format)
+                    else:
+                        kvpairs = function(key, event[i])
                     for kvpair in kvpairs:
                         output[kvpair[0]] = kvpair[1]
                 except SnowplowEventTransformationException as sete:

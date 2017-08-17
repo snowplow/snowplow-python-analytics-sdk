@@ -60,14 +60,30 @@ def fix_schema(prefix, schema):
     """
     Create an Elasticsearch field name from a schema string
     """
+    vendor, name, format, version = parse_schema(schema, underscore_vendor=True)
+    model = version.split('-')[0]
+    if prefix != "":
+        return "{}_{}_{}_{}".format(prefix, vendor, name, model)
+    else:
+        return "{}_{}_{}".format(vendor, name, model)
+
+
+def parse_schema(schema, underscore_vendor=True):
+    """
+    Parse and clean an individual schema string
+    """
     schema_dict = extract_schema(schema)
-    snake_case_organization = schema_dict['vendor'].replace('.', '_').lower()
-    snake_case_name = re.sub('([^A-Z_])([A-Z])', '\g<1>_\g<2>', schema_dict['name']).lower()
-    model = schema_dict['version'].split('-')[0]
-    return "{}_{}_{}_{}".format(prefix, snake_case_organization, snake_case_name, model)
+    if underscore_vendor:
+        vendor = schema_dict['vendor'].replace('.', '_').lower()
+    else:
+        vendor = schema_dict['vendor'].lower()
+    name = re.sub('([^A-Z_])([A-Z])', '\g<1>_\g<2>', schema_dict['name']).lower()
+    format = schema_dict.get('format')
+    version = schema_dict['version']
+    return vendor, name, format, version
 
 
-def parse_contexts(contexts):
+def parse_contexts(contexts, shred_format='elasticsearch'):
     """
     Convert a contexts JSON to an Elasticsearch-compatible list of key-value pairs
     For example, the JSON
@@ -106,9 +122,24 @@ def parse_contexts(contexts):
     my_json = json.loads(contexts)
     data = my_json['data']
     distinct_contexts = {}
+
     for context in data:
-        schema = fix_schema("contexts", context['schema'])
-        inner_data = context['data']
+        vendor, name, format, version = parse_schema(context['schema'], underscore_vendor=False)
+        if shred_format == 'redshift':
+            schema = fix_schema("", context['schema'])
+            inner_data = {
+                'data': context['data'],
+                'schema': {
+                    'vendor': vendor,
+                    'name': name,
+                    'format': format,
+                    'version': version
+                }
+            }
+        else:
+            schema = fix_schema("contexts", context['schema'])
+            inner_data = context['data']
+
         if schema not in distinct_contexts:
             distinct_contexts[schema] = [inner_data]
         else:
@@ -119,7 +150,7 @@ def parse_contexts(contexts):
     return output
 
 
-def parse_unstruct(unstruct):
+def parse_unstruct(unstruct, shred_format='elasticsearch'):
     """
     Convert an unstructured event JSON to a list containing one Elasticsearch-compatible key-value pair
     For example, the JSON
@@ -139,6 +170,12 @@ def parse_unstruct(unstruct):
     [
       (
         "unstruct_com_snowplowanalytics_snowplow_link_click_1", {
+          "schema": {
+            "vendor": "com.snowploanalytics.snowplow",
+            "name": "link_click",
+            "format": "jsonschema",
+            "version": "1-0-1"
+          }
           "key": "value"
         }
       )
@@ -148,8 +185,24 @@ def parse_unstruct(unstruct):
     data = my_json['data']
     schema = data['schema']
     if 'data' in data:
-        inner_data = data['data']
+        if shred_format == 'redshift':
+            inner_data = {}
+            inner_data['data'] = data['data']
+        else:
+            inner_data = data['data']
     else:
         raise SnowplowEventTransformationException(["Could not extract inner data field from unstructured event"])
-    fixed_schema = fix_schema("unstruct_event", schema)
+
+    vendor, name, format, version = parse_schema(data['schema'], underscore_vendor=False)
+    if shred_format == 'redshift':
+        fixed_schema = fix_schema("", schema)
+        inner_data['schema'] = {
+            'vendor': vendor,
+            'name': name,
+            'format': format,
+            'version': version
+        }
+    elif shred_format == 'elasticsearch':
+        fixed_schema = fix_schema("unstruct_event", schema)
+
     return [(fixed_schema, inner_data)]
