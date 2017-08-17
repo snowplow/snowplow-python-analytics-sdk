@@ -30,6 +30,7 @@ def test_schema_parse():
     assert(format == expected_format)
     assert(version == expected_version)
 
+
 def test_schema_parse_underscore_vendor():
     input_schema = "iglu:com.snowplowanalytics.snowplow/WebPage/jsonschema/1-0-0"
     expected_vendor = "com_snowplowanalytics_snowplow"
@@ -43,11 +44,13 @@ def test_schema_parse_underscore_vendor():
     assert(format == expected_format)
     assert(version == expected_version)
 
+
 def test_fix_schema_elasticsearch_contexts():
     input_schema = "iglu:com.snowplowanalytics.snowplow/WebPage/jsonschema/1-0-0"
     expected_string = "contexts_com_snowplowanalytics_snowplow_web_page_1"
     actual_string = fix_schema("contexts", input_schema)
     assert(actual_string == expected_string)
+
 
 def test_fix_schema_elasticsearch_unstruct():
     input_schema = "iglu:com.snowplowanalytics.snowplow/WebPage/jsonschema/1-0-0"

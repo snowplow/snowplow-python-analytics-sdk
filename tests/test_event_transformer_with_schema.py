@@ -15,7 +15,6 @@
 """
 
 from snowplow_analytics_sdk.event_transformer import transform
-from snowplow_analytics_sdk.snowplow_event_transformation_exception import SnowplowEventTransformationException
 import json
 
 unstruct_json = """{
@@ -471,11 +470,12 @@ expected2 = json.loads("""{
         "true_tstamp": "2013-11-26T00:03:57.886Z"
       }""")
 
+
 def test_transform_with_elasticsearch_format():
     actual = transform(tsv, shred_format='elasticsearch')
     assert(actual == expected)
 
+
 def test_transform_with_redshift_format():
     actual = transform(tsv, shred_format='redshift')
     assert(actual == expected2)
-

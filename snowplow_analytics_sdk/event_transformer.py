@@ -34,7 +34,8 @@ def convert_bool(key, value):
         return [(key, True)]
     elif value == '0':
         return [(key, False)]
-    raise SnowplowEventTransformationException(["Invalid value {} for field {}".format(value, key)])
+    raise SnowplowEventTransformationException(
+        ["Invalid value {} for field {}".format(value, key)])
 
 
 def convert_double(key, value):
@@ -196,19 +197,22 @@ def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_dat
     return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data, shred_format)
 
 
-def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True, shred_format='elasticsearch'):
+def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True,
+                       shred_format='elasticsearch'):
     """
     Convert a Snowplow enriched event in the form of an array of fields into a JSON
     """
     if len(event) != len(known_fields):
         raise SnowplowEventTransformationException(
-            ["Expected {} fields, received {} fields.".format(len(known_fields), len(event))]
+            ["Expected {} fields, received {} fields.".format(
+                len(known_fields), len(event))]
         )
     else:
         output = {}
         errors = []
         if add_geolocation_data and event[LATITUDE_INDEX] != '' and event[LONGITUDE_INDEX] != '':
-            output['geo_location'] = event[LATITUDE_INDEX] + ',' + event[LONGITUDE_INDEX]
+            output['geo_location'] = event[LATITUDE_INDEX] + \
+                ',' + event[LONGITUDE_INDEX]
         for i in range(len(event)):
             key = known_fields[i][0]
             if event[i] != '':

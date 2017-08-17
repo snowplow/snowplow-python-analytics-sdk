@@ -16,6 +16,7 @@
 
 from snowplow_analytics_sdk.json_shredder import parse_contexts, parse_unstruct
 
+
 def test_parse_contexts_redshift():
     json_input = """{
       "data": [
@@ -42,39 +43,39 @@ def test_parse_contexts_redshift():
     }"""
 
     expected = [
-            ('com_acme_unduplicated_1', [{
-                'schema':
-                    {
-                        'version': '1-0-0',
-                        'vendor': 'com.acme',
-                        'name': 'unduplicated',
+        ('com_acme_unduplicated_1', [{
+            'schema':
+            {
+                'version': '1-0-0',
+                'vendor': 'com.acme',
+                'name': 'unduplicated',
                         'format': 'jsonschema'
-                    },
+            },
                 'data': {
                     'unique': True
-                },
-                        }]),
+            },
+        }]),
         ('com_acme_duplicated_1', [
             {
                 'schema':
-                    {
-                        'version': '1-0-0',
-                        'vendor': 'com.acme',
-                        'name': 'duplicated',
-                        'format': 'jsonschema'
-                    },
+                {
+                    'version': '1-0-0',
+                    'vendor': 'com.acme',
+                    'name': 'duplicated',
+                    'format': 'jsonschema'
+                },
                 'data': {
                     'value': 1
                 }
             },
             {
                 'schema':
-                    {
-                        'version': '1-0-0',
-                        'vendor': 'com.acme',
-                        'name': 'duplicated',
-                        'format': 'jsonschema'
-                    },
+                {
+                    'version': '1-0-0',
+                    'vendor': 'com.acme',
+                    'name': 'duplicated',
+                    'format': 'jsonschema'
+                },
                 'data': {
                     'value': 2
                 },
@@ -83,6 +84,7 @@ def test_parse_contexts_redshift():
     ]
     result = parse_contexts(json_input, shred_format='redshift')
     assert(sorted(result) == sorted(expected))
+
 
 def test_parse_contexts_elasticsearch():
     json_input = """{
@@ -116,6 +118,7 @@ def test_parse_contexts_elasticsearch():
     result = parse_contexts(json_input, shred_format='elasticsearch')
     assert(sorted(result) == sorted(expected))
 
+
 def test_parse_unstruct_redshift():
     json_input = """{
       "data": {
@@ -127,23 +130,24 @@ def test_parse_unstruct_redshift():
       "schema": "iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0"
     }"""
     expected = [
-      (
-        "com_snowplowanalytics_snowplow_link_click_1", {
-          "schema": {
-            "vendor": "com.snowplowanalytics.snowplow",
-            "name": "link_click",
-            "format": "jsonschema",
-            "version": "1-0-1"
-          },
-          "data": {
-            "key": "value"
-          }
-        }
-      )
+        (
+            "com_snowplowanalytics_snowplow_link_click_1", {
+                "schema": {
+                    "vendor": "com.snowplowanalytics.snowplow",
+                    "name": "link_click",
+                    "format": "jsonschema",
+                    "version": "1-0-1"
+                },
+                "data": {
+                    "key": "value"
+                }
+            }
+        )
     ]
 
     result = parse_unstruct(json_input, shred_format='redshift')
     assert(result == expected)
+
 
 def test_parse_unstruct_elasticsearch():
     json_input = """{
@@ -156,11 +160,11 @@ def test_parse_unstruct_elasticsearch():
       "schema": "iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0"
     }"""
     expected = [
-      (
-        "unstruct_event_com_snowplowanalytics_snowplow_link_click_1", {
-          "key": "value"
-        }
-      )
+        (
+            "unstruct_event_com_snowplowanalytics_snowplow_link_click_1", {
+                "key": "value"
+            }
+        )
     ]
 
     result = parse_unstruct(json_input, shred_format='elasticsearch')

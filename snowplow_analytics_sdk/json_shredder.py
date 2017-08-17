@@ -63,9 +63,10 @@ def fix_schema(prefix, schema):
     vendor, name, format, version = parse_schema(schema, underscore_vendor=True)
     model = version.split('-')[0]
     if prefix != "":
-      return "{}_{}_{}_{}".format(prefix, vendor, name, model)
+        return "{}_{}_{}_{}".format(prefix, vendor, name, model)
     else:
-      return "{}_{}_{}".format(vendor, name, model)
+        return "{}_{}_{}".format(vendor, name, model)
+
 
 def parse_schema(schema, underscore_vendor=True):
     """
@@ -73,13 +74,14 @@ def parse_schema(schema, underscore_vendor=True):
     """
     schema_dict = extract_schema(schema)
     if underscore_vendor:
-      vendor = schema_dict['vendor'].replace('.', '_').lower()
+        vendor = schema_dict['vendor'].replace('.', '_').lower()
     else:
-      vendor = schema_dict['vendor'].lower()
+        vendor = schema_dict['vendor'].lower()
     name = re.sub('([^A-Z_])([A-Z])', '\g<1>_\g<2>', schema_dict['name']).lower()
     format = schema_dict.get('format')
     version = schema_dict['version']
     return vendor, name, format, version
+
 
 def parse_contexts(contexts, shred_format='elasticsearch'):
     """
@@ -183,11 +185,11 @@ def parse_unstruct(unstruct, shred_format='elasticsearch'):
     data = my_json['data']
     schema = data['schema']
     if 'data' in data:
-        if include_data:
-          inner_data = {}
-          inner_data['data'] = data['data']
+        if shred_format == 'redshift':
+            inner_data = {}
+            inner_data['data'] = data['data']
         else:
-          inner_data = data['data']
+            inner_data = data['data']
     else:
         raise SnowplowEventTransformationException(["Could not extract inner data field from unstructured event"])
 
