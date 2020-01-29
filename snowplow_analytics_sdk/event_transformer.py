@@ -14,6 +14,8 @@
     License: Apache License Version 2.0
 """
 
+import csv
+
 from snowplow_analytics_sdk import json_shredder
 from snowplow_analytics_sdk.snowplow_event_transformation_exception import SnowplowEventTransformationException
 
@@ -193,7 +195,9 @@ def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_dat
     """
     Convert a Snowplow enriched event TSV into a JSON
     """
-    return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data)
+    # We csv reader to correctly split the TSV line 
+    line = next(csv.reader((line,), delimiter='\t')
+    return jsonify_good_event(line, known_fields, add_geolocation_data)
 
 
 def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True):
