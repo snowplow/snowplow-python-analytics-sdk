@@ -182,11 +182,6 @@ full_event = (
         ("pp_yoffset_min", ""),
         ("pp_yoffset_max", ""),
         ("useragent", ""),
-        ("br_name", ""),
-        ("br_family", ""),
-        ("br_version", ""),
-        ("br_type", ""),
-        ("br_renderengine", ""),
         ("br_lang", ""),
         ("br_features_pdf", "1"),
         ("br_features_flash", "0"),
@@ -201,12 +196,7 @@ full_event = (
         ("br_colordepth", ""),
         ("br_viewwidth", ""),
         ("br_viewheight", ""),
-        ("os_name", ""),
-        ("os_family", ""),
-        ("os_manufacturer", ""),
         ("os_timezone", ""),
-        ("dvce_type", ""),
-        ("dvce_ismobile", ""),
         ("dvce_screenwidth", ""),
         ("dvce_screenheight", ""),
         ("doc_charset", ""),
@@ -351,12 +341,12 @@ def test_wrong_tsv_length():
         transform("two\tfields")
     except SnowplowEventTransformationException as sete:
         exception = sete
-    assert(exception.message == "Expected 131 fields, received 2 fields.")
+    assert(exception.message == "Expected 121 fields, received 2 fields.")
 
 
 def test_malformed_field():
     exception = None
-    malformed_fields_tsv = '\t' * 110 + 'bad_tax_base' + '\t' * 20
+    malformed_fields_tsv = '\t' * 100 + 'bad_tax_base' + '\t' * 20
 
     try:
         transform(malformed_fields_tsv)
@@ -368,7 +358,7 @@ def test_malformed_field():
 
 def test_multiple_malformed_fields():
     exception = None
-    malformed_fields_tsv = '\t' * 52 + 'bad_contexts' + '\t' * 50 + 'bad_dvce_ismobile' + '\t' * 28
+    malformed_fields_tsv = '\t' * 52 + 'bad_contexts' + '\t' * 41 + 'bad_dvce_screenwidth' + '\t' * 27
 
     try:
         transform(malformed_fields_tsv)
