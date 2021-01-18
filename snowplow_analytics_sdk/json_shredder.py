@@ -61,8 +61,8 @@ def fix_schema(prefix, schema):
     Create an Elasticsearch field name from a schema string
     """
     schema_dict = extract_schema(schema)
-    snake_case_organization = schema_dict['vendor'].replace('.', '_').lower()
-    snake_case_name = re.sub('([^A-Z_])([A-Z])', '\g<1>_\g<2>', schema_dict['name']).lower()
+    snake_case_organization = re.sub('[\.\-]', '_', schema_dict['vendor']).lower()
+    snake_case_name = re.sub('([^A-Z_])([A-Z])', '\g<1>_\g<2>', re.sub('[\.\-]', '_', schema_dict['name'])).lower()
     model = schema_dict['version'].split('-')[0]
     return "{}_{}_{}_{}".format(prefix, snake_case_organization, snake_case_name, model)
 
