@@ -76,6 +76,16 @@ contexts_json = """{
           "loadEventStart": 0,
           "loadEventEnd": 0
         }
+      },
+      {
+        "schema": "iglu:com.google.analytics.enhanced-ecommerce/productFieldObject/jsonschema/1-0-0",
+        "data": {
+          "price":100,
+          "name":"product-x",
+          "currency":"EUR",
+          "id":"123456",
+          "quantity":1
+        }
       }
     ]
   }"""
@@ -278,6 +288,13 @@ expected = json.loads("""{
         "page_urlpath" : "/product/index.html",
         "page_urlquery" : "id=GTM-DLRG",
         "page_urlfragment" : "4-conclusion",
+        "contexts_com_google_analytics_enhanced_ecommerce_product_field_object_1" : [ {
+          "price":100,
+          "name":"product-x",
+          "currency":"EUR",
+          "id":"123456",
+          "quantity":1
+        } ],
         "contexts_org_schema_web_page_1" : [ {
           "genre" : "blog",
           "inLanguage" : "en-US",
