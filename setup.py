@@ -24,7 +24,4 @@ setup(
     url='https://github.com/snowplow/snowplow-python-analytics-sdk',
     author_email='support@snowplowanalytics.com',
     packages=['snowplow_analytics_sdk'],
-    install_requires=[
-        "boto3>=1.4.0",
-    ]
 )
