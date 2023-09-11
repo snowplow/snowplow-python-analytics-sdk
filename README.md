@@ -12,7 +12,7 @@ Use this SDK with **[Apache Spark][spark]**, **[AWS Lambda][lambda]**, **[Databr
 
 ## Documentation
 
-[Setup guide][setup-guide] and [User guide][user-guide] are avaiable at [Snowplow wiki][snowplow-wiki].
+[Analytics SDK - Python][analytics-sdk-python] documentation is avaiable at [Snowplow wiki][snowplow-wiki].
 
 
 ## Copyright and license
@@ -28,16 +28,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-[snowplow]: http://snowplowanalytics.com
-[snowplow-wiki]: https://github.com/snowplow/snowplow/wiki
-[enriched-events]: https://github.com/snowplow/snowplow/wiki/canonical-event-model
+[snowplow]: http://snowplow.io
+[snowplow-wiki]: https://docs.snowplow.io/docs
+[enriched-events]: https://docs.snowplow.io/docs/understanding-your-pipeline/canonical-event/
 
 [lambda]: http://docs.aws.amazon.com/lambda/latest/dg/welcome.html
 [spark]: http://spark.apache.org/
 [databricks]: https://databricks.com/
 
-[setup-guide]: https://github.com/snowplow/snowplow/wiki/Python-Analytics-SDK-setup
-[user-guide]: https://github.com/snowplow/snowplow/wiki/Python-Analytics-SDK
+[analytics-sdk-python]: https://docs.snowplow.io/docs/modeling-your-data/analytics-sdk/analytics-sdk-python/
 
 [license-image]: http://img.shields.io/badge/license-Apache--2-blue.svg?style=flat
 [license]: http://www.apache.org/licenses/LICENSE-2.0
