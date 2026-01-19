@@ -189,14 +189,14 @@ ENRICHED_EVENT_FIELD_TYPES = (
 )
 
 
-def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True):
+def transform(line, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True, drop_empty_fields=True):
     """
     Convert a Snowplow enriched event TSV into a JSON
     """
-    return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data)
+    return jsonify_good_event(line.split('\t'), known_fields, add_geolocation_data, drop_empty_fields)
 
 
-def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True):
+def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolocation_data=True, drop_empty_fields=True):
     """
     Convert a Snowplow enriched event in the form of an array of fields into a JSON
     """
@@ -224,6 +224,9 @@ def jsonify_good_event(event, known_fields=ENRICHED_EVENT_FIELD_TYPES, add_geolo
                         event[i],
                         repr(e)
                     )]
+            else:
+                if not drop_empty_fields:
+                    output[key] = None
         if errors:
             raise SnowplowEventTransformationException(errors)
         else:

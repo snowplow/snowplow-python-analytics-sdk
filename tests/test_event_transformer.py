@@ -340,9 +340,23 @@ expected = json.loads("""{
       }""")
 
 
+def _get_expected_with_empty_fields():
+    result = expected.copy()
+    exclude = ('derived_contexts', 'contexts', 'unstruct_event')
+    for key, value in full_event:
+        if key not in exclude and key not in result:
+            result[key] = None
+    return result
+
+
 def test_transform():
     actual = transform(tsv)
     assert(actual == expected)
+
+
+def test_transform_keep_empty_fields():
+    actual = transform(tsv, drop_empty_fields=False)
+    assert(actual == _get_expected_with_empty_fields())
 
 
 def test_wrong_tsv_length():
